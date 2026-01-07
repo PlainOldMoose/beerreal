@@ -31,7 +31,7 @@ public class BeerEntryService {
 
     public BeerEntryResponse createBeerEntry(String username, MultipartFile photo, BeerEntryRequest request) {
         // Get the user
-        User user = userRepository.findByUserName(
+        User user = userRepository.findByUsername(
                 username).orElseThrow(
                 () -> new RuntimeException(
                         "Username not found"));
@@ -59,7 +59,7 @@ public class BeerEntryService {
     }
 
     public List<BeerEntryResponse> getUserEntries(String username) {
-        User user = userRepository.findByUserName(
+        User user = userRepository.findByUsername(
                 username).orElseThrow(
                 () -> new RuntimeException(
                         "Username not found"));
@@ -109,7 +109,7 @@ public class BeerEntryService {
     }
 
     public long getUserEntryCount(String username, Integer year) {
-        User user = userRepository.findByUserName(
+        User user = userRepository.findByUsername(
                 username).orElseThrow(
                 () -> new RuntimeException(
                         "Username not found"));
