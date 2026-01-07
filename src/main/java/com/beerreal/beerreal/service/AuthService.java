@@ -72,7 +72,7 @@ public class AuthService {
                         request.getPassword()));
 
         // Get user
-        User user = userRepository.findByUserName(
+        User user = userRepository.findByUsername(
                         request.getUsername())
                 .orElseThrow(
                         () -> new RuntimeException(
