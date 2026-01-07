@@ -14,7 +14,7 @@ import java.util.UUID;
 public class FileStorageService {
     private final Path uploadDir;
 
-    public FileStorageService(Path uploadDir) {
+    public FileStorageService() {
         this.uploadDir = Paths.get(
                 "uploads");
         try {
