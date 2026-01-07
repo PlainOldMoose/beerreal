@@ -36,7 +36,7 @@ public class BeerEntry {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "year")
+    @Column(name = "entry_year")
     private Integer year;
 
     @PrePersist
