@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface BeerEntryRepository extends JpaRepository<BeerEntry, Integer> {
     List<BeerEntry> findByUserOrderByCreatedAtDesc(User user);
-    List<BeerEntry> findByYearOrderByCReatedAtDeesc(Integer year);
+    List<BeerEntry> findByYearOrderByCreatedAtDesc(Integer year);
 
     @Query("SELECT e.user, COUNT(e) as entryCount FROM BeerEntry e WHERE e.year = :year GROUP BY e.user ORDER BY entryCount DESC")
-    List<Object[]> findLeeaderboardByYear(Integer year);
+    List<Object[]> findLeaderboardByYear(Integer year);
 
     long countByUserAndYear(User user, Integer year);
 }
