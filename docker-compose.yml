@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: beerreal-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-beerreal}
+      POSTGRES_USER: ${DB_USERNAME:-beerreal}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-beerreal} -d ${DB_NAME:-beerreal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - beerreal-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: beerreal-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-beerreal}
+      DB_USERNAME: ${DB_USERNAME:-beerreal}
+      DB_PASSWORD: ${DB_PASSWORD:-changeme}
+      # JWT
+      JWT_SECRET: ${JWT_SECRET}
+      # S3/R2 Storage
+      S3_BUCKET: ${S3_BUCKET}
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_PUBLIC_URL: ${S3_PUBLIC_URL:-}
+      # CORS
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+    ports:
+      - "8080:8080"
+    networks:
+      - beerreal-network
+
+  frontend:
+    build:
+      context: ../beerreal-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:8080/api}
+    container_name: beerreal-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - beerreal-network
+
+volumes:
+  postgres_data:
+
+networks:
+  beerreal-network:
+    driver: bridge
