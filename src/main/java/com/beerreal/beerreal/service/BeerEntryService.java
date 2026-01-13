@@ -27,7 +27,7 @@ public class BeerEntryService {
     private UserRepository userRepository;
 
     @Autowired
-    private FileStorageService fileStorageService;
+    private StorageService storageService;
 
     public BeerEntryResponse createBeerEntry(String username, MultipartFile photo, BeerEntryRequest request) {
         // Get the user
@@ -37,9 +37,8 @@ public class BeerEntryService {
                         "Username not found"));
 
         // Store the photo
-        String photoFilename = fileStorageService.storeFile(
-                photo);
-        String photoUrl = "/api/files/" + photoFilename;
+        String photoFilename = storageService.storeFile(photo);
+        String photoUrl = storageService.getFileUrl(photoFilename);
 
         // Create entry
         BeerEntry entry = new BeerEntry();
